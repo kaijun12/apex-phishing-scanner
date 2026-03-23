@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>A.P.E.X.</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f4f0;
+      --surface: #ffffff;
+      --header-bg: #111111;
+      --header-text: #ffffff;
+      --accent-p: #c0392b;
+      --accent-h: #111111;
+      --border: #e0ddd8;
+      --text-primary: #1a1a1a;
+      --text-secondary: #6b6b6b;
+      --text-muted: #9a9a9a;
+      --low-bg: #eef7ee;
+      --low-border: #4caf50;
+      --low-score: #2e7d32;
+      --medium-bg: #fff8e1;
+      --medium-border: #ff9800;
+      --medium-score: #e65100;
+      --high-bg: #fdecea;
+      --high-border: #f44336;
+      --high-score: #b71c1c;
+      --btn-primary: #111111;
+      --btn-secondary: #111111;
+      --radius: 4px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0 40px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      letter-spacing: 0.04em;
+      color: #fff;
+    }
+
+    .logo-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: #888;
+    }
+
+    .logo-sub span { color: var(--accent-p); }
+
+    header .divider {
+      width: 1px;
+      height: 20px;
+      background: #333;
+      margin: 0 4px;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      gap: 0;
+      padding: 32px 40px;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      align-items: flex-start;
+    }
+
+    .panel-left {
+      flex: 0 0 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .dropzone {
+      background: var(--surface);
+      border: 1.5px dashed var(--border);
+      border-radius: var(--radius);
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dropzone:hover, .dropzone.drag-over {
+      border-color: #aaa;
+      background: #fafafa;
+    }
+
+    .dropzone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-icon {
+      width: 44px;
+      height: 44px;
+      opacity: 0.35;
+    }
+
+    .drop-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .drop-formats {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      min-height: 24px;
+    }
+
+    .file-info svg { flex-shrink: 0; opacity: 0.5; }
+    .file-name { font-family: 'DM Mono', monospace; font-size: 12px; }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 12px 0;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .btn-analyse {
+      background: var(--btn-primary);
+      color: #fff;
+    }
+
+    .btn-analyse:not(:disabled):hover { opacity: 0.85; }
+
+    .btn-clear {
+      background: var(--btn-secondary);
+      color: #fff;
+    }
+
+    .btn-clear:hover { opacity: 0.75; }
+
+    .status {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+      min-height: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #ccc;
+      border-top-color: #555;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .panel-right {
+      flex: 1;
+      padding-left: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel-right.hidden { display: none; }
+
+    .risk-card {
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      border-left: 5px solid transparent;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .risk-card.Low  { background: var(--low-bg);    border-color: var(--low-border); }
+    .risk-card.Medium { background: var(--medium-bg); border-color: var(--medium-border); }
+    .risk-card.High { background: var(--high-bg);   border-color: var(--high-border); }
+
+    .risk-score {
+      font-family: 'DM Serif Display', serif;
+      font-size: 52px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .risk-card.Low    .risk-score { color: var(--low-score); }
+    .risk-card.Medium .risk-score { color: var(--medium-score); }
+    .risk-card.High   .risk-score { color: var(--high-score); }
+
+    .risk-level-label {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+    }
+
+    .risk-explanation {
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--text-primary);
+      max-width: 540px;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .red-flags-list {
+      font-size: 13.5px;
+      line-height: 1.75;
+      color: var(--text-primary);
+      padding-left: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .red-flags-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .red-flags-list li::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #c0392b;
+      flex-shrink: 0;
+      margin-top: 8px;
+    }
+
+    .audio-section { display: flex; flex-direction: column; gap: 8px; }
+
+    audio {
+      width: 100%;
+      height: 36px;
+      border-radius: var(--radius);
+      outline: none;
+    }
+
+    .extracted-section { display: flex; flex-direction: column; gap: 8px; }
+
+    .extracted-text {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in { animation: fadeUp 0.35s ease forwards; }
+
+    .placeholder {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-muted);
+      padding: 60px 0;
+    }
+
+    .placeholder svg { opacity: 0.2; }
+    .placeholder p { font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <span class="logo">A.P.E.X.</span>
+    <div class="divider"></div>
+    <span class="logo-sub">Automated <span>P</span>hishing <span>E</span>mail E<span>x</span>plainer</span>
+  </header>
+
+  <main>
+    <div class="panel-left">
+
+      <div class="dropzone" id="dropzone">
+        <input type="file" id="fileInput" accept=".png,.jpg,.jpeg,.bmp,.webp" />
+        <svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="18" height="18" rx="2"/>
+          <circle cx="8.5" cy="8.5" r="1.5"/>
+          <path d="M21 15l-5-5L5 21"/>
+        </svg>
+        <span class="drop-label">Drop a screenshot here or click to browse</span>
+        <span class="drop-formats">PNG | JPG | BMP | WEBP</span>
+      </div>
+
+      <div class="file-info" id="fileInfo">
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-analyse" id="btnAnalyse" onclick="scanFile()" disabled>Analyse</button>
+        <button class="btn btn-clear" onclick="clearAll()">Clear</button>
+      </div>
+
+      <div class="status" id="status"></div>
+
+    </div>
+
+    <div class="panel-right" id="panelRight">
+      <div class="placeholder" id="placeholder">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M9 12h6M9 16h6M9 8h6M5 20h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z"/>
+        </svg>
+        <p>Upload a screenshot to see analysis</p>
+      </div>
+      <div id="results" style="display:none; display:flex; flex-direction:column; gap:20px;"></div>
+    </div>
+  </main>
+
+  <script>
+    const dropzone   = document.getElementById('dropzone');
+    const fileInput  = document.getElementById('fileInput');
+    const fileInfo   = document.getElementById('fileInfo');
+    const btnAnalyse = document.getElementById('btnAnalyse');
+    const statusEl   = document.getElementById('status');
+    const placeholder = document.getElementById('placeholder');
+    const resultsEl  = document.getElementById('results');
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files[0]) setFile(fileInput.files[0]);
+    });
+
+    dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag-over'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
+    dropzone.addEventListener('drop', e => {
+      e.preventDefault();
+      dropzone.classList.remove('drag-over');
+      const f = e.dataTransfer.files[0];
+      if (f) { fileInput.files = e.dataTransfer.files; setFile(f); }
+    });
+
+    function setFile(f) {
+      fileInfo.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+        </svg>
+        <span class="file-name">${f.name}</span>`;
+      btnAnalyse.disabled = false;
+      statusEl.innerHTML = '';
+    }
+
+    function clearAll() {
+      fileInput.value = '';
+      fileInfo.innerHTML = '';
+      btnAnalyse.disabled = true;
+      statusEl.innerHTML = '';
+      placeholder.style.display = 'flex';
+      resultsEl.style.display = 'none';
+      resultsEl.innerHTML = '';
+    }
+
+    async function scanFile() {
+      if (!fileInput.files[0]) return;
+
+      btnAnalyse.disabled = true;
+      statusEl.innerHTML = '<div class="spinner"></div> Scanning… this may take 15–30 seconds';
+      placeholder.style.display = 'none';
+      resultsEl.style.display = 'none';
+
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
+      try {
+        const response = await fetch('/scan', { method: 'POST', body: formData });
+        const data = await response.json();
+
+        statusEl.innerHTML = '';
+        btnAnalyse.disabled = false;
+
+        if (data.error) {
+          statusEl.innerHTML = `<span style="color:#c0392b">Error: ${data.error}</span>`;
+          return;
+        }
+
+        displayResults(data);
+
+      } catch (err) {
+        statusEl.innerHTML = `<span style="color:#c0392b">Something went wrong: ${err.message}</span>`;
+        btnAnalyse.disabled = false;
+      }
+    }
+
+    function displayResults(data) {
+      const { parsed, extracted_text, audio_url } = data;
+      const level = parsed.risk_level || 'Low';
+
+      const flagsHTML = parsed.red_flags && parsed.red_flags.length
+        ? parsed.red_flags.map(f => `<li>${f}</li>`).join('')
+        : '<li>None identified.</li>';
+
+      resultsEl.innerHTML = `
+        <!-- Risk card -->
+        <div class="risk-card ${level} fade-in">
+          <div class="risk-score">${parsed.risk_score}/100</div>
+          <div class="risk-level-label">Risk Level: ${level}</div>
+          <div class="risk-explanation">${parsed.explanation}</div>
+        </div>
+
+        <!-- Red flags -->
+        <div class="fade-in" style="animation-delay:0.08s">
+          <div class="section-label">Red Flags</div>
+          <ul class="red-flags-list">${flagsHTML}</ul>
+        </div>
+
+        <!-- Audio -->
+        <div class="audio-section fade-in" style="animation-delay:0.14s">
+          <div class="section-label">Listen to analysis</div>
+          <audio controls src="${audio_url}"></audio>
+        </div>
+
+        <!-- Extracted text -->
+        <div class="extracted-section fade-in" style="animation-delay:0.2s">
+          <div class="section-label">Extracted text</div>
+          <div class="extracted-text">${extracted_text}</div>
+        </div>
+      `;
+
+      placeholder.style.display = 'none';
+      resultsEl.style.display = 'flex';
+    }
+  </script>
+</body>
+</html>

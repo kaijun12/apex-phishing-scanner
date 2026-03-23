@@ -1,0 +1,5 @@
+flask
+easyocr
+Pillow
+requests
+gTTS
