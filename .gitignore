@@ -1,0 +1,6 @@
+venv/
+uploads/
+audio/
+scans.db
+__pycache__/
+*.pyc
